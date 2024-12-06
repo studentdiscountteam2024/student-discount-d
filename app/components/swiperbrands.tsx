@@ -8,23 +8,32 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Link from "next/link";
 
+// Define the type for the data items
+interface BrandItem {
+  name: string;
+  imgurl: string;
+}
+
 const Page: React.FC = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<BrandItem[]>([]); // Typed as an array of BrandItem
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://api.studentdiscountteam.workers.dev/brands", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/brands", {
+          method: "GET",
+        });
+        const result: BrandItem[] = await response.json(); // Type the response
+        setData(result);
+      } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -47,7 +56,7 @@ const Page: React.FC = () => {
                   <div className="mbanner rounded-xl overflow-hidden">
                     <img
                       src={item.imgurl}
-                      alt="image"
+                      alt={item.name} // Use the name for better accessibility
                       className="bg-contain object-cover w-full xl:w-48 h-auto rounded-t-xl mt-6"
                     />
                   </div>
