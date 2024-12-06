@@ -1,7 +1,5 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
-export const runtime = "edge";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
@@ -10,14 +8,20 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Link from "next/link";
 
+// Define the type for each banner item
+interface BannerItem {
+  brandname: string;
+  imgurl: string;
+}
+
 export default function SwiperComponent() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<BannerItem[]>([]); // Typed as an array of BannerItem
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("https://api.studentdiscountteam.workers.dev/banner", { method: "GET" })
       .then((response) => response.json())
-      .then((data) => {
+      .then((data: BannerItem[]) => {
         setData(data);
         setLoading(false);
       })
@@ -47,7 +51,7 @@ export default function SwiperComponent() {
                   <div className="mbanner rounded-xl overflow-hidden">
                     <img
                       src={item.imgurl}
-                      alt="image"
+                      alt={item.brandname}
                       className="bg-contain object-cover w-full h-auto rounded-t-xl mt-6"
                     />
                   </div>
