@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
 import QRCode from "react-qr-code";
 
-export const runtime = "edge";
-
 interface Product {
   text: string;
   logo: string;
