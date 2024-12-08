@@ -24,7 +24,7 @@ export default function SwiperComponent() {
         const response = await fetch("https://api.studentdiscountteam.workers.dev/banner", {
           method: "GET",
         });
-        const result = (await response.json()) as BannerItem[]; // Cast response data to BannerItem[]
+        const result = (await response.json()) as BannerItem[]; 
         setData(result);
       } catch (error) {
         console.error("Error fetching data:", error);
