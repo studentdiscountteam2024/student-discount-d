@@ -13,11 +13,14 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
     "firebase": "^11.0.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "react-loading-skeleton": "^3.5.0",
+    "react-qr-code": "^2.0.15",
     "swiper": "^11.1.15"
   },
   "devDependencies": {
