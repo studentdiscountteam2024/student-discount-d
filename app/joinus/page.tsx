@@ -28,8 +28,8 @@ const AuthPage: React.FC = () => {
 
 
   useEffect(() => {
-    if (!loading && user) {
-      router.push("/checkout");
+    if (!loading && user && !user.emailVerified) {
+        router.push("/checkout");
     }
   }, [user, loading, router]);
 
@@ -48,7 +48,6 @@ const AuthPage: React.FC = () => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      // Extract user1 email from Google
       const user1 = result.user;
       if (!user1.email || !validateEmail(user1.email)) {
         throw new Error(
