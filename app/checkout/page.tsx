@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
 import Skeleton from "react-loading-skeleton";
 import QRCode from "react-qr-code";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 // Type Definitions
 type Discount = {
@@ -32,6 +34,20 @@ const Page: React.FC = () => {
   const [qrCodeData, setQRCodeData] = useState<string>("");
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    const checkuser = async () => {
+      if (!user?.email) return;
+      const userRef = doc(db, "users", user.email);
+      const userDoc = await getDoc(userRef);
+      if (!userDoc.exists()) {
+        router.push("/joinus");
+        return;
+      }
+    };
+
+    checkuser();
+  }, [user, router]);
 
   useEffect(() => {
     if (!loading && !user) {
