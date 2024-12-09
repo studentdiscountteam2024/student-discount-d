@@ -52,7 +52,6 @@ const Page: React.FC = () => {
           >
             {data.map((item, index) => (
               <SwiperSlide key={index}>
-                <Link href={`company/${item.name}`}>
                   <div className="mbanner rounded-xl overflow-hidden">
                     <img
                       src={item.imgurl}
@@ -60,7 +59,6 @@ const Page: React.FC = () => {
                       className="bg-contain object-cover w-full xl:w-48 h-auto rounded-t-xl mt-6"
                     />
                   </div>
-                </Link>
               </SwiperSlide>
             ))}
           </Swiper>
