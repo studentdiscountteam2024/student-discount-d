@@ -5,30 +5,29 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
+import Skeleton from "react-loading-skeleton";
 import QRCode from "react-qr-code";
 
-interface Product {
-  text: string;
-  logo: string;
+// Type Definitions
+type Discount = {
+  companyname: string;
+  imageurl: string;
+  discountpercentage: number;
+  discountpara: string;
 }
 
-interface User {
+type UserData = {
   name: string;
   college: string;
-  email: string;
   phone: string;
 }
 
 const Page: React.FC = () => {
-  const products: Product[] = [
-    { text: "MacBook Pro", logo: "/macbook-pro.png" },
-    { text: "iPhone 13", logo: "/iphone-13.png" },
-    { text: "AirPods Pro", logo: "/airpods-pro.png" },
-    { text: "Apple Watch", logo: "/apple-watch.png" },
-  ];
-
+  const [loading2, setLoading2] = useState(true);
+  const [data, setData] = useState<Discount[]>([]);
+  const [data2, setData2] = useState<UserData | null>(null);
   const [selected, setSelected] = useState<string>("Select the brand");
-  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [selectedDetails, setSelectedDetails] = useState<Discount | null>(null);
   const [showQR, setShowQR] = useState<boolean>(false);
   const [qrCodeData, setQRCodeData] = useState<string>("");
   const { user, loading } = useAuth();
@@ -40,45 +39,57 @@ const Page: React.FC = () => {
     }
   }, [user, loading, router]);
 
-  if (loading) {
-    return (
-      <div className="z-20 w-full h-full flex justify-center items-center mt-56">
-        <img src="loading.svg" className="size-20" alt="Loading..." />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!user?.uid) return;
 
-  const handleIncrement = (productName: string) => {
-    setCounts((prev) => ({
-      ...prev,
-      [productName]: (prev[productName] || 0) + 1,
-    }));
-  };
+    const fetchData = async () => {
+      const urls = [
+        "https://api.studentdiscountteam.workers.dev/discounts",
+        `https://student-discount.fk4460467.workers.dev/api/users/${user.uid}`,
+      ];
 
-  const handleDecrement = (productName: string) => {
-    setCounts((prev) => ({
-      ...prev,
-      [productName]: Math.max((prev[productName] || 0) - 1, 0),
-    }));
-  };
+      try {
+        const [response1, response2] = await Promise.all(
+          urls.map((url) =>
+            fetch(url).then((response) => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch data from ${url}`);
+              }
+              return response.json();
+            })
+          )
+        );
 
-  const handleCheckout = async () => {
-    const checkoutData = {
-      user: {
-        name: "John Doe",
-        college:  "Default College",
-        email: user?.email || "example@mail.com",
-        phone: "1234567890",
-      },
-      selectedBrand: selected,
-      selectedProducts: Object.entries(counts).map(([product, count]) => ({
-        product,
-        count,
-      })),
+        const discount: any = response1;
+        const userData: any = response2;
+
+        setData(discount);
+        setData2(userData);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading2(false);
+      }
     };
 
-    const qrData = JSON.stringify(checkoutData);
-    setQRCodeData(qrData);
+    fetchData();
+  }, [user]);
+
+  const generateRandomQRData = () => {
+    return Math.random().toString(36).substring(2, 15);
+  };
+
+  const handleSelectBrand = (brand: string) => {
+    setSelected(brand);
+    const brandDetails = data.find((item) => item.companyname === brand) || null;
+    setSelectedDetails(brandDetails);
+    setShowQR(false);
+  };
+
+  const handleGenerateQRCode = async () => {
+    const randomQR = generateRandomQRData();
+    setQRCodeData(randomQR);
     setShowQR(true);
 
     try {
@@ -87,42 +98,28 @@ const Page: React.FC = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...checkoutData, qrCode: qrData }),
+          body: JSON.stringify({
+            Uid: user?.uid,
+            email: user?.email,
+            qrCode: randomQR,
+            brand: selected,
+          }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to send data to the database");
+        throw new Error("Failed to push data to server");
       }
-      console.log("Data successfully sent to the database!");
+      console.log("QR code data successfully sent to the server!");
     } catch (error) {
-      console.error("Error sending data to the database:", error);
+      console.error("Error pushing QR code data:", error);
     }
   };
 
-  if (showQR) {
+  if (loading) {
     return (
-      <div className="flex flex-col items-center mt-20 space-y-10">
-        <section className="flex flex-col py-8 px-4 mb-5 rounded-sm shadow-xl">
-          <p className="font-semibold flex justify-between">
-            <h1 className="text-purple-500">Name:</h1> { "John Doe"}
-          </p>
-          <p className="font-semibold flex justify-between">
-            <h1 className="text-purple-500">College:</h1> { "Default College"}
-          </p>
-          <p className="font-semibold flex justify-between">
-            <h1 className="text-purple-500">Email:</h1> {user?.email || "example@mail.com"}
-          </p>
-          <p className="font-semibold flex justify-between">
-            <h1 className="text-purple-500">Phone No:</h1> {"1234567890"}
-          </p>
-        </section>
-        <div className="mb-10">
-          <QRCode value={qrCodeData} size={256} />
-        </div>
-        <p className="font-semibold text-lg text-center text-orange-500">
-          Use this QR code for verification
-        </p>
+      <div className="z-20 w-full h-full flex justify-center items-center mt-56">
+        <img src="loading.svg" className="size-20" alt="Loading..." />
       </div>
     );
   }
@@ -130,10 +127,18 @@ const Page: React.FC = () => {
   return (
     <div className="p-4 mt-16 xl:mx-36">
       <section className="flex flex-col border-2 p-4 mb-8 rounded-lg shadow-md">
-        <p className="font-semibold">Name: {user?.email}</p>
-        <p className="font-semibold">College: {user?.uid}</p>
-        <p className="font-semibold">Email: {user?.email}</p>
-        <p className="font-semibold">Phone No: {user?.displayName}</p>
+        <p className="font-semibold flex justify-between text-sm xl:text-lg">
+          <h1 className="text-purple-500 ">Name:</h1> {data2?.name || "N/A"}
+        </p>
+        <p className="font-semibold flex justify-between text-sm xl:text-lg">
+          <h1 className="text-purple-500 text-sm xl:text-lg">College:</h1> {data2?.college || "N/A"}
+        </p>
+        <p className="font-semibold flex justify-between text-sm xl:text-lg">
+          <h1 className="text-purple-500">Email:</h1> {user?.email || "N/A"}
+        </p>
+        <p className="font-semibold flex justify-between text-sm xl:text-lg">
+          <h1 className="text-purple-500">Phone No:</h1> {data2?.phone || "N/A"}
+        </p>
       </section>
 
       <section className="flex justify-center mb-10">
@@ -143,19 +148,13 @@ const Page: React.FC = () => {
             <ChevronDownIcon aria-hidden="true" className="w-5 h-5 text-gray-400" />
           </MenuButton>
           <MenuItems className="absolute z-10 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black/5">
-            {[
-              "Habitate",
-              "Vijay Sales",
-              "AudioCup",
-              "Bajaj Electronics",
-              "Reliance Digital",
-            ].map((brand) => (
-              <MenuItem key={brand}>
+            {data.map((item) => (
+              <MenuItem key={item.companyname}>
                 <button
-                  onClick={() => setSelected(brand)}
+                  onClick={() => handleSelectBrand(item.companyname)}
                   className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  {brand}
+                  {item.companyname}
                 </button>
               </MenuItem>
             ))}
@@ -163,44 +162,39 @@ const Page: React.FC = () => {
         </Menu>
       </section>
 
-      <section className="grid grid-cols-2 gap-6">
-        {products.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center border rounded-lg shadow-md p-4 bg-white"
-          >
-            <img
-              src={item.logo}
-              alt={item.text}
-              className="h-32 w-32 object-contain rounded-md mb-4"
-            />
-            <p className="font-bold text-lg text-center mb-4">{item.text}</p>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => handleDecrement(item.text)}
-                className="w-10 h-10 flex justify-center items-center rounded-full bg-gray-200 text-lg font-bold hover:bg-gray-300"
-              >
-                -
-              </button>
-              <span className="text-lg font-semibold">{counts[item.text] || 0}</span>
-              <button
-                onClick={() => handleIncrement(item.text)}
-                className="w-10 h-10 flex justify-center items-center rounded-full bg-gray-200 text-lg font-bold hover:bg-gray-300"
-              >
-                +
-              </button>
-            </div>
+      {selectedDetails && !showQR && !loading2 ? (
+        <section className="border rounded-lg p-6 shadow-lg xl:w-full">
+          <img
+            src={selectedDetails.imageurl}
+            alt={selectedDetails.companyname}
+            className="h-48 w-full object-cover rounded-lg mb-4 xl:h-96 xl:object-contain"
+          />
+          <h1 className="text-2xl font-bold mb-2 xl:flex xl:justify-center">{selectedDetails.companyname}</h1>
+          <p className="text-lg mb-2 text-green-500 xl:flex xl:justify-center">
+            Discount: {selectedDetails.discountpercentage}%
+          </p>
+          <p className="text-md mb-4 xl:flex xl:justify-center">{selectedDetails.discountpara}</p>
+          <div className="xl:w-full xl:flex xl:justify-center">
+            <button
+              onClick={handleGenerateQRCode}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+            >
+              Generate QR Code
+            </button>
           </div>
-        ))}
-      </section>
-      <div className="w-full justify-center flex mt-5">
-        <button
-          onClick={handleCheckout}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          Checkout
-        </button>
-      </div>
+        </section>
+      ) : (
+        <Skeleton height={400} count={1} />
+      )}
+
+      {showQR && (
+        <div className="flex flex-col items-center mt-10">
+          <QRCode value={qrCodeData} size={256} />
+          <p className="font-semibold text-lg text-center text-orange-500 mt-4">
+            Use this QR code for verification
+          </p>
+        </div>
+      )}
     </div>
   );
 };

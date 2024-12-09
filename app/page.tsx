@@ -48,7 +48,7 @@ export default function Home() {
               <img
                 src={item.imgurl}
                 className="rounded-t-2xl w-full h-full"
-                alt={item.text || "Brand image"} // Add fallback alt text
+                alt={item.text || "Brand image"} 
               />
               <div className="flex justify-center w-full h-fit">
                 <Link href={"/checkout"}>
@@ -57,6 +57,7 @@ export default function Home() {
                   </button>
                 </Link>
               </div>
+              
             </div>
           </div>
         ))}
