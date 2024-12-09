@@ -5,7 +5,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
-import Skeleton from "react-loading-skeleton";
 import QRCode from "react-qr-code";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -25,7 +24,6 @@ type UserData = {
 }
 
 const Page: React.FC = () => {
-  const [loading2, setLoading2] = useState(true);
   const [data, setData] = useState<Discount[]>([]);
   const [data2, setData2] = useState<UserData | null>(null);
   const [selected, setSelected] = useState<string>("Select the brand");
@@ -84,8 +82,6 @@ const Page: React.FC = () => {
 
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading2(false);
       }
     };
 
@@ -178,7 +174,7 @@ const Page: React.FC = () => {
         </Menu>
       </section>
 
-      {selectedDetails && !showQR && !loading2 ? (
+      {selectedDetails && !showQR &&  (
         <section className="border rounded-lg p-6 shadow-lg xl:w-full">
           <img
             src={selectedDetails.imageurl}
@@ -199,8 +195,6 @@ const Page: React.FC = () => {
             </button>
           </div>
         </section>
-      ) : (
-        <Skeleton height={400} count={1} />
       )}
 
       {showQR && (
