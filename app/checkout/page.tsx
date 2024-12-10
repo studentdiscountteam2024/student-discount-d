@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
 import QRCode from "react-qr-code";
 import { db } from "../firebase";
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
 import { doc, getDoc } from "firebase/firestore";
 
-// Type Definitions
 type Discount = {
   companyname: string;
   imageurl: string;
@@ -31,7 +32,10 @@ const Page: React.FC = () => {
   const [showQR, setShowQR] = useState<boolean>(false);
   const [qrCodeData, setQRCodeData] = useState<string>("");
   const { user, loading } = useAuth();
+  const [loading1, setLoading1] = useState(true)
   const router = useRouter();
+
+  
 
   useEffect(() => {
     const checkuser = async () => {
@@ -82,6 +86,8 @@ const Page: React.FC = () => {
 
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading1(false);
       }
     };
 
@@ -103,7 +109,6 @@ const Page: React.FC = () => {
     const randomQR = generateRandomQRData();
     setQRCodeData(randomQR);
     setShowQR(true);
-
     try {
       const response = await fetch(
         "https://student-discount.fk4460467.workers.dev/api/checkout",
@@ -115,6 +120,7 @@ const Page: React.FC = () => {
             email: user?.email,
             qrCode: randomQR,
             brand: selected,
+            verified: 2,
           }),
         }
       );
@@ -138,20 +144,24 @@ const Page: React.FC = () => {
 
   return (
     <div className="p-4 mt-16 xl:mx-36">
-      <section className="flex flex-col border-2 p-4 mb-8 rounded-lg shadow-md">
-        <p className="font-semibold flex justify-between text-sm xl:text-lg">
-          <h1 className="text-purple-500 ">Name:</h1> {data2?.name || "N/A"}
-        </p>
-        <p className="font-semibold flex justify-between text-sm xl:text-lg">
-          <h1 className="text-purple-500 text-sm xl:text-lg">College:</h1> {data2?.college || "N/A"}
-        </p>
-        <p className="font-semibold flex justify-between text-sm xl:text-lg">
-          <h1 className="text-purple-500">Email:</h1> {user?.email || "N/A"}
-        </p>
-        <p className="font-semibold flex justify-between text-sm xl:text-lg">
-          <h1 className="text-purple-500">Phone No:</h1> {data2?.phone || "N/A"}
-        </p>
-      </section>
+      {loading1 && <Skeleton count={3} height={40}  />}
+      {!loading1 && (
+          <section className="flex flex-col border-2 p-4 mb-8 rounded-lg shadow-md">
+          <p className="font-semibold flex justify-between text-sm xl:text-lg">
+            <h1 className="text-purple-500 ">Name:</h1> {data2?.name || "N/A"}
+          </p>
+          <p className="font-semibold flex justify-between text-sm xl:text-lg">
+            <h1 className="text-purple-500 text-sm xl:text-lg">College:</h1> {data2?.college || "N/A"}
+          </p>
+          <p className="font-semibold flex justify-between text-sm xl:text-lg">
+            <h1 className="text-purple-500">Email:</h1> {user?.email || "N/A"}
+          </p>
+          <p className="font-semibold flex justify-between text-sm xl:text-lg">
+            <h1 className="text-purple-500">Phone No:</h1> {data2?.phone || "N/A"}
+          </p>
+        </section>
+      )}
+    
 
       <section className="flex justify-center mb-10">
         <Menu as="div" className="relative inline-block">
@@ -173,8 +183,8 @@ const Page: React.FC = () => {
           </MenuItems>
         </Menu>
       </section>
-
-      {selectedDetails && !showQR &&  (
+          {loading1 && <Skeleton count={1} height={300} width={300} />}
+      {selectedDetails && !showQR && !loading1  && (
         <section className="border rounded-lg p-6 shadow-lg xl:w-full">
           <img
             src={selectedDetails.imageurl}
