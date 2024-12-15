@@ -8,7 +8,7 @@ import useAuth from "@/app/hooks/useauth";
 import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import QRCode from "react-qr-code";
-
+export const runtime = 'edge';
 // Define types for Brand and Product
 interface Product {
   productName: string;
