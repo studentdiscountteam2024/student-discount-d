@@ -1,68 +1,3 @@
-// "use client";
-// import React from "react";
-// import { useEffect } from "react";
-// import { useState } from "react";
-// import { useParams } from "next/navigation";
-// import Skeleton from "react-loading-skeleton";
-// import "react-loading-skeleton/dist/skeleton.css";
-
-// const page = () => {
-//   const { slug } = useParams();
-//   const [Data, setData] = useState();
-//   const [loading, setLoading] = useState(true);
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch(
-//           "https://student-discount.fk4460467.workers.dev/checkbrand",
-//           {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({
-//               selected: localStorage.getItem("selected") || slug,
-//             }),
-//           }
-//         );
-//         const data: any = await response.json();
-//         setData(data.isManual);
-//         if (!response.ok) {
-//           throw new Error("Failed to push data to server");
-//         }
-//       } catch (error) {
-//         console.error("Error checking brand:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-//   return (
-//     <div className="mx-6  mt-20">
-//       {Data && !loading && (
-//         <div>
-//             <p className="text-center font-semibold text-xl font-mono ">{localStorage.getItem("selected")}</p>
-//             <div>
-//               <form action="">
-//                 <input type="text" placeholder="Brand Name"/>
-//                 <input type="text" placeholder="Product Name" />
-
-//               </form>
-//             </div>
-//         </div>
-//       )}
-//       {!Data && !loading && (
-//         <div>Automatic</div>
-//     )}
-//       {loading && (
-//         <Skeleton count={5} height={100} width={300} className="mt-10"/>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default page;
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -179,7 +114,7 @@ const Page: React.FC = () => {
 
   // Check if at least one product from "Vijay Sales" has a count > 0
   const isQRCodeEnabled = products.some(
-    (item) =>
+    (item :any) =>
       item.BrandName === localStorage.getItem("selected") &&
       (counts[item.ProductName] || 0) > 0
   );
@@ -236,7 +171,7 @@ const Page: React.FC = () => {
     field: keyof Brand,
     value: string | number
   ) => {
-    const updatedBrands = [...brands];
+    const updatedBrands:any = [...brands];
     updatedBrands[index][field] = value;
     setBrands(updatedBrands);
   };
@@ -245,7 +180,7 @@ const Page: React.FC = () => {
     setBrands([...brands, { brandName: "", productName: "", count: 1 }]);
   };
 
-  const addMoreProducts = (brandIndex: number) => {
+  const addMoreProducts = (brandIndex: number) => { 
     const updatedBrands = [...brands];
     if (!updatedBrands[brandIndex].products) {
       updatedBrands[brandIndex].products = [];
@@ -266,7 +201,7 @@ const Page: React.FC = () => {
     field: keyof Product,
     value: string | number
   ) => {
-    const updatedBrands = [...brands];
+    const updatedBrands:any = [...brands];
     updatedBrands[brandIndex].products![productIndex][field] = value;
     setBrands(updatedBrands);
   };
@@ -453,9 +388,9 @@ const Page: React.FC = () => {
           <section className="grid grid-cols-2 xl:gap-6 gap-2  xl:mx-4 xl:grid-cols-4">
             {products
               .filter(
-                (item) => item.BrandName == localStorage.getItem("selected")
+                (item:any) => item.BrandName == localStorage.getItem("selected")
               )
-              .map((item, index) => (
+              .map((item:any, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center border rounded-lg shadow-md py-2 bg-white"
