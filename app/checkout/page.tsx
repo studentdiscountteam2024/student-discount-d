@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
 import QRCode from "react-qr-code";
@@ -94,9 +95,6 @@ const Page: React.FC = () => {
     fetchData();
   }, [user]);
 
-  const generateRandomQRData = () => {
-    return Math.random().toString(36).substring(2, 15);
-  };
 
   const handleSelectBrand = (brand: string) => {
     setSelected(brand);
@@ -105,34 +103,7 @@ const Page: React.FC = () => {
     setShowQR(false);
   };
 
-  const handleGenerateQRCode = async () => {
-    const randomQR = generateRandomQRData();
-    setQRCodeData(randomQR);
-    setShowQR(true);
-    try {
-      const response = await fetch(
-        "https://student-discount.fk4460467.workers.dev/api/checkout",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            Uid: user?.uid,
-            email: user?.email,
-            qrCode: randomQR,
-            brand: selected,
-            verified: 2,
-          }),
-        }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to push data to server");
-      }
-      console.log("QR code data successfully sent to the server!");
-    } catch (error) {
-      console.error("Error pushing QR code data:", error);
-    }
-  };
 
   if (loading) {
     return (
@@ -197,24 +168,21 @@ const Page: React.FC = () => {
           </p>
           <p className="text-md mb-4 xl:flex xl:justify-center">{selectedDetails.discountpara}</p>
           <div className="xl:w-full xl:flex xl:justify-center">
+            <Link href={`checkout/verification/${selected}`}>
             <button
-              onClick={handleGenerateQRCode}
+              onClick={() => {
+                localStorage.removeItem("selected");
+                localStorage.setItem("selected", selected);
+              }}
               className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
             >
-              Generate QR Code
+              Get Now
             </button>
+            </Link>
           </div>
         </section>
       )}
 
-      {showQR && (
-        <div className="flex flex-col items-center mt-10">
-          <QRCode value={qrCodeData} size={256} />
-          <p className="font-semibold text-lg text-center text-orange-500 mt-4">
-            Use this QR code for verification
-          </p>
-        </div>
-      )}
     </div>
   );
 };
