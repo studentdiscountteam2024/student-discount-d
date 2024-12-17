@@ -52,7 +52,7 @@ export default function Home() {
               />
               <div className="flex justify-center w-full h-fit">
                 <Link href={"/checkout"}>
-                  <button className="rounded-full bg-blue-500 text-white m-2 h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  text-sm">
+                  <button className="rounded-full  text-blue-500 m-2 h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  text-sm">
                     Get Offer
                   </button>
                 </Link>

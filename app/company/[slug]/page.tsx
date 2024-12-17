@@ -51,7 +51,7 @@ const Page: React.FC = () => {
             />
             <div className="flex justify-center w-full h-fit">
               <Link href={"/checkout"}>
-                <button className=" m-2 h-[5vh] w-[43vw] xl:w-[11vw] py-2 font-semibold rounded-full bg-blue-500 text-white   text-sm">
+                <button className=" m-2 h-[5vh] w-[43vw] xl:w-[11vw] py-2 font-semibold rounded-full text-blue-500   text-sm">
                   Avail Discount
                 </button>
               </Link>
@@ -73,7 +73,7 @@ const Page: React.FC = () => {
               />
               <div className="flex justify-center w-full h-fit">
                 <Link href={"/checkout"}>
-                  <button className="  rounded-full bg-blue-500 text-white   text-sm m-2 h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  ">
+                  <button className="  rounded-full  text-blue-500  text-sm m-2 h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  ">
                     Get Offer
                   </button>
                 </Link>

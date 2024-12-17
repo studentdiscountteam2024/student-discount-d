@@ -6,7 +6,6 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useauth";
-import QRCode from "react-qr-code";
 import { db } from "../firebase";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
@@ -36,7 +35,6 @@ const Page: React.FC = () => {
   const [loading1, setLoading1] = useState(true)
   const router = useRouter();
 
-  
 
   useEffect(() => {
     const checkuser = async () => {

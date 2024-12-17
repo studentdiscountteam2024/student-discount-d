@@ -180,6 +180,13 @@ const Page: React.FC = () => {
     setBrands([...brands, { brandName: "", productName: "", count: 1 }]);
   };
 
+  const deletebrand = (index: number) => {
+    const updatedBrands = [...brands]; 
+    updatedBrands.splice(index, 1); 
+    setBrands(updatedBrands);
+  };
+  
+
   const addMoreProducts = (brandIndex: number) => { 
     const updatedBrands = [...brands];
     if (!updatedBrands[brandIndex].products) {
@@ -219,7 +226,22 @@ const Page: React.FC = () => {
           <div>
             {brands.map((brand, index) => (
               <div key={index} className=" p-4 mb-4 rounded shadow-xl">
-                <div className="mb-4">
+                <div className="mb-4 ">
+                  {brands.length>1 && (
+                  <div onClick={()=> deletebrand(index)} className={`${index==0 ? 'hidden' :'visible'} p-1 rounded-full justify-end flex hover:cursor-pointer`}>
+                    <svg className=" rounded-full"
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="19px"
+                              viewBox="0 -960 960 960"
+                              width="19px"
+                              fill="red"
+                            >
+                              <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                            </svg>
+                    </div>
+                  )}
+                  
+
                   <label className="block mb-2 font-semibold">Brand Name</label>
                   <input
                     type="text"
