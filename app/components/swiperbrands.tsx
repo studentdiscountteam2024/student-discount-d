@@ -21,7 +21,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/brands", {
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/brands", {
           method: "GET",
         });
         const result: BrandItem[] = await response.json(); // Type the response

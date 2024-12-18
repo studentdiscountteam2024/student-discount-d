@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/brands", { method: "GET" });
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/brands", { method: "GET" });
         const result: BrandItem[] = await response.json(); // Ensure type safety for the API response
         setData(result);
       } catch (error) {

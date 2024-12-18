@@ -75,7 +75,7 @@ const Page: React.FC = () => {
     setShowQR(true);
     try {
       const response = await fetch(
-        "https://student-discount.fk4460467.workers.dev/api/checkout",
+        "https://api.studentdiscountteam.workers.dev/api/checkout",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -123,7 +123,7 @@ const Page: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://student-discount.fk4460467.workers.dev/checkbrand",
+          "https://api.studentdiscountteam.workers.dev/checkbrand",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -143,7 +143,7 @@ const Page: React.FC = () => {
         if (!data) {
           try {
             const response = await fetch(
-              "https://student-discount.fk4460467.workers.dev/api/automatic",
+              "https://api.studentdiscountteam.workers.dev/api/automatic",
               {
                 method: "GET",
               }
@@ -186,7 +186,6 @@ const Page: React.FC = () => {
     setBrands(updatedBrands);
   };
   
-
   const addMoreProducts = (brandIndex: number) => { 
     const updatedBrands = [...brands];
     if (!updatedBrands[brandIndex].products) {

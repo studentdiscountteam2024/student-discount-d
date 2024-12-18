@@ -61,8 +61,8 @@ const Page: React.FC = () => {
 
     const fetchData = async () => {
       const urls = [
-        "https://api.studentdiscountteam.workers.dev/discounts",
-        `https://student-discount.fk4460467.workers.dev/api/users/${user.uid}`,
+        "https://api.studentdiscountteam.workers.dev/data/discounts",
+        `https://api.studentdiscountteam.workers.dev/api/users/${user.uid}`,
       ];
 
       try {

@@ -21,7 +21,7 @@ export default function SwiperComponent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/banner", {
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/banner", {
           method: "GET",
         });
         const result = (await response.json()) as BannerItem[]; 

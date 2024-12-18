@@ -100,7 +100,7 @@ const AuthPage: React.FC = () => {
       await setDoc(userRef, userDetails);
 
       const response = await fetch(
-        `https://student-discount.fk4460467.workers.dev/api/users`,
+        `https://api.studentdiscountteam.workers.dev/api/users`,
         {
           method: "POST",
           headers: {
