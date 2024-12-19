@@ -50,7 +50,7 @@ export default function Page() {
       setIsScanning(false);
       setError(null);
       try {
-        const response = await fetch("https://student-discount.fk4460467.workers.dev/api/verify-qr", {
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/api/verify-qr", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

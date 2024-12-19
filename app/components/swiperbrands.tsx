@@ -37,7 +37,7 @@ const Page: React.FC = () => {
   }, []);
 
   return (
-    <div className="h-auto py-10 z-10 xl:flex xl:justify-center">
+    <div className="h-auto mb-10 z-10 xl:flex xl:justify-center">
       <div className="max-w-[90%] mx-4 xl:w-[70%]">
         {loading ? (
           <Skeleton height={100} count={1} />
