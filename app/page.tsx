@@ -45,7 +45,7 @@ export default function Home() {
             <div className="rounded-2xl bg-white w-[90vw] xl:w-[40vw] shadow-lg">
               <img
                 src={item.BrandURL}
-                className="rounded-t-2xl w-full h-full"
+                className="rounded-t-2xl w-[90vw] h-[40vh] object-cover xl:w-[40vw] xl:h-[55vh]"
                 alt={item.text || "Brand image"} 
               />
               <div className="p-2 text-center">

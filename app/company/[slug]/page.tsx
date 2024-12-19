@@ -86,7 +86,7 @@ const Page: React.FC = () => {
             />
             <div className="flex justify-center w-full h-fit">
               <Link href={"/checkout"}>
-                <button className="m-2 h-[5vh] w-[43vw] xl:w-[11vw] py-2 font-semibold rounded-full text-blue-500 text-sm">
+                <button className=" h-[5vh] w-[43vw] xl:w-[11vw] py-2 font-semibold rounded-full text-blue-500 text-sm">
                   Avail Discount
                 </button>
               </Link>
@@ -106,7 +106,7 @@ const Page: React.FC = () => {
             <img
               src={item.BrandURL}
               alt={item.BrandName}
-              className="rounded-t-2xl w-[90vw] h-[40vh] object-cover xl:w-[40vw] xl:h-[25vh]"
+              className="rounded-t-2xl w-[90vw] h-[40vh] object-cover xl:w-[40vw] xl:h-[55vh]"
             />
             <div className="p-2 text-center">
               <h3 className="text-lg font-semibold">{item.ProductName}</h3>
@@ -122,10 +122,10 @@ const Page: React.FC = () => {
           
         ))}
         {!loading && (
-          <div className="w-full flex justify-center mt-4">
+          <div className="w-full flex justify-center  mt-4">
             <button
               onClick={handleShowMore}
-              className=" font-semibold underline"
+              className="underline"
             >
               {showAll ? "Show Less" : "Show More"}
             </button>
