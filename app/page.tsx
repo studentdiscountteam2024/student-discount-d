@@ -18,9 +18,9 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/api/automatic", { method: "GET" });
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/banner", { method: "GET" });
         const result: BrandItem[] = await response.json(); // Ensure type safety for the API response
-        setData(result.slice(0, 6));
+        setData(result);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -44,16 +44,13 @@ export default function Home() {
           <div key={index} className="">
             <div className="rounded-2xl bg-white w-[90vw] xl:w-[40vw] shadow-lg">
               <img
-                src={item.BrandURL}
-                className="rounded-t-2xl w-[90vw] h-[40vh] object-cover xl:w-[40vw] xl:h-[55vh]"
+                src={item.imgurl}
+                className="rounded-t-2xl w-[90vw] h-full object-cover xl:w-[40vw] "
                 alt={item.text || "Brand image"} 
               />
-              <div className="p-2 text-center">
-              <h3 className="text-lg font-semibold">{item.ProductName}</h3>
-            </div>
               <div className="flex justify-center w-full h-fit">
                 <Link href={"/checkout"}>
-                  <button className="rounded-full  text-blue-500 m-2 h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  text-sm">
+                  <button className="rounded-full  text-blue-500  h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  text-sm">
                     Get Offer
                   </button>
                 </Link>

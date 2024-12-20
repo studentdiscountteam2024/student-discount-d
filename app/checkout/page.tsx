@@ -158,7 +158,7 @@ const Page: React.FC = () => {
           <img
             src={selectedDetails.imageurl}
             alt={selectedDetails.companyname}
-            className="h-48 w-full object-cover rounded-lg mb-4 xl:h-96 xl:object-contain"
+            className="h-58 w-full object-cover rounded-lg mb-4 xl:h-96 xl:object-contain"
           />
           <h1 className="text-2xl font-bold mb-2 xl:flex xl:justify-center">{selectedDetails.companyname}</h1>
           <p className="text-lg mb-2 text-green-500 xl:flex xl:justify-center">

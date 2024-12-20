@@ -47,7 +47,6 @@ const Page: React.FC = () => {
         );
         const similarResult: any = await similarResponse.json();
         setSimilarProducts(similarResult);
-        console.log(similarResult);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -106,7 +105,7 @@ const Page: React.FC = () => {
             <img
               src={item.BrandURL}
               alt={item.BrandName}
-              className="rounded-t-2xl w-[90vw] h-[40vh] object-cover xl:w-[40vw] xl:h-[55vh]"
+              className="rounded-t-2xl w-[90vw] h-[30vh] object-cover xl:w-[40vw] xl:h-[55vh]"
             />
             <div className="p-2 text-center">
               <h3 className="text-lg font-semibold">{item.ProductName}</h3>
