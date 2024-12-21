@@ -15,6 +15,25 @@ interface BrandItem {
 }
 
 const Page: React.FC = () => {
+
+  const [dimensions, setDimensions] = useState({ height: 150, width: 300 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        
+        setDimensions({ height: 150, width: 1300 });
+      } else {
+        
+        setDimensions({ height: 150, width: 300 });
+      }
+    };
+
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -137,7 +156,14 @@ const Page: React.FC = () => {
 
       {/* Loading Skeleton */}
       {loading && (
-        <Skeleton count={3} height={150} width={300} className="mt-10 ml-4" />
+        <div className="xl:w-100vw">
+        <Skeleton
+          count={3}
+          height={dimensions.height}
+          width={dimensions.width}
+          className="mt-10 mx-4"
+        />
+      </div>
       )}
     </div>
     

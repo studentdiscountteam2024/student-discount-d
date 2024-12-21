@@ -23,6 +23,24 @@ interface Brand {
 }
 
 const Page: React.FC = () => {
+   const [dimensions, setDimensions] = useState({ height: 150, width: 300 });
+  
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth >= 1024) {
+          
+          setDimensions({ height: 150, width: 1300 });
+        } else {
+          
+          setDimensions({ height: 150, width: 300 });
+        }
+      };
+  
+      handleResize(); 
+      window.addEventListener("resize", handleResize);
+  
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
   const { slug } = useParams();
   const [data, setData] = useState<boolean | null>(null);
   const [products, setproducts] = useState([]);
@@ -406,7 +424,7 @@ const Page: React.FC = () => {
           <p className="text-center font-serif xl:text-2xl font-semibold mb-4 text-xl">
             {localStorage.getItem("selected")}
           </p>
-          <section className="grid grid-cols-2 xl:gap-6 gap-2  xl:mx-4 xl:grid-cols-4">
+          <section className="grid grid-cols-2 xl:gap-6 gap-2  xl:mx-4 xl:grid-cols-3">
             {products
               .filter(
                 (item:any) => item.BrandName == localStorage.getItem("selected")
@@ -460,15 +478,25 @@ const Page: React.FC = () => {
         </div>
       )}
       {loading && (
-        <Skeleton count={5} height={100} width={300}  className="mt-10" />
+        <div className="xl:w-100vw">
+                <Skeleton
+                  count={3}
+                  height={dimensions.height}
+                  width={dimensions.width}
+                  className="mt-10 mx-4"
+                />
+              </div>
       )}
       {showQR && (
-        <div className="flex flex-col items-center mt-10">
-          <QRCode value={qrCodeData} size={256} />
-          <p className="font-semibold text-lg text-center text-orange-500 mt-4">
-            Use this QR code for verification
-          </p>
+        <div>
+        <div className="flex justify-center mt-56 ">
+          <QRCode value={qrCodeData} size={256}  /> 
         </div>
+        <p className="font-semibold text-lg text-center text-orange-500 mt-4">
+        Use this QR code for verification
+      </p>
+      </div>
+
       )}
     </div>
   );
