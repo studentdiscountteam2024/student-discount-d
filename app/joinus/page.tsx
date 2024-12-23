@@ -16,6 +16,7 @@ const validateEmail = (email: string): boolean => {
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [rollno, setRollno] = useState("");
   const [phone, setPhone] = useState("");
   const [college, setCollege] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +24,7 @@ const AuthPage: React.FC = () => {
   const [step, setStep] = useState(1); // Step 1: Email Verification, Step 2: Google Sign-In, Step 3: Collect Details
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [notAcademic, setNotAcademic] = useState(false);
 
   useEffect(() => {
     if (!loading && user && !user.emailVerified) {
@@ -42,9 +44,7 @@ const AuthPage: React.FC = () => {
     setError(null);
 
     if (!validateEmail(email)) {
-      setError(
-        "Please use a valid academic email address"
-      );
+      setError("Please use a valid academic email address");
       return;
     }
 
@@ -59,16 +59,18 @@ const AuthPage: React.FC = () => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      const user1 = result.user;
+      const user1:any = result.user;
+      if (notAcademic) {
+        setEmail(user1.email);
+      }
+      const userRef = doc(db, "users", user1.email);
+      const userDoc = await getDoc(userRef);
 
-      if (user1.email !== email) {
+      if (user1.email !== email && !notAcademic) {
         throw new Error(
           "The authenticated email does not match the provided academic email."
         );
       }
-
-      const userRef = doc(db, "users", user1.email);
-      const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
         router.push("/checkout");
@@ -98,7 +100,7 @@ const AuthPage: React.FC = () => {
 
       const userRef = doc(db, "users", email);
       await setDoc(userRef, userDetails);
-
+      const rollNumber = notAcademic ? rollno : email.split("@")[0];
       const response = await fetch(
         `https://api.studentdiscountteam.workers.dev/api/users`,
         {
@@ -106,7 +108,14 @@ const AuthPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name, uid: user?.uid, email, college, phone }),
+          body: JSON.stringify({
+            name,
+            uid: user?.uid,
+            email,
+            rollno: rollNumber,
+            college,
+            phone,
+          }),
         }
       );
 
@@ -126,106 +135,135 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-50">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md mx-3">
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
-        )}
+    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md mx-3">
+          {error && (
+            <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+          )}
 
-        {step === 1 && (
-          <form onSubmit={handleEmailVerification} className="space-y-4">
-            <input
-              type="email"
-              placeholder="Enter your academic email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full p-3 border rounded-md"
-            />
+          {step === 1 && (
+            <form onSubmit={handleEmailVerification} className="space-y-4">
+              <div className="flex justify-center items-center">
+                <span
+                  onClick={() => {
+                    console.log("Not Academic");
+                    setStep(2);
+                    setNotAcademic(true);
+                  }}
+                  className="font-sm text-xs underline cursor-pointer"
+                >
+                  Don't have Academic Email
+                </span>
+              </div>
+              <input
+                type="email"
+                placeholder="Enter your academic email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full p-3 border rounded-md"
+              />
+              <button
+                type="submit"
+                className="w-full py-3 text-white font-semibold rounded-md bg-blue-500 hover:bg-blue-600"
+              >
+                Continue
+              </button>
+            </form>
+          )}
+
+          {step === 2 && (
             <button
-              type="submit"
-              className="w-full py-3 text-white font-semibold rounded-md bg-blue-500 hover:bg-blue-600"
-            >
-              Continue
-            </button>
-          </form>
-        )}
-
-        {step === 2 && (
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={loading1}
-            className={`w-full py-3 text-white font-semibold rounded-md transition ${
-              loading1 ? "bg-gray-400" : "bg-blue-500"
-            }`}
-          >
-            {loading1 ? (
-              "Verifying..."
-            ) : (
-              <h1 className="flex text-xl justify-center gap-2 items-center">
-                <img
-                  src="google.png"
-                  alt="google"
-                  className="h-10 bg-white rounded-full p-1"
-                />
-                Sign In with Google
-              </h1>
-            )}
-          </button>
-        )}
-
-        {step === 3 && (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full p-3 border rounded-md"
-            />
-
-            <input
-              type="text"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (/^\d{0,10}$/.test(value)) {
-                  setPhone(value);
-                }
-              }}
-              onBlur={() => {
-                if (phone.length !== 10) {
-                  alert("Phone number must be exactly 10 digits long.");
-                }
-              }}
-              required
-              pattern="\d{10}"
-              maxLength={10}
-              className="w-full p-3 border rounded-md"
-            />
-
-            <input
-              type="text"
-              placeholder="College Name"
-              value={college}
-              onChange={(e) => setCollege(e.target.value)}
-              required
-              className="w-full p-3 border rounded-md"
-            />
-
-            <button
-              type="submit"
+              onClick={handleGoogleSignIn}
               disabled={loading1}
               className={`w-full py-3 text-white font-semibold rounded-md transition ${
-                loading1 ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+                loading1 ? "bg-gray-400" : "bg-blue-500"
               }`}
             >
-              {loading1 ? "Saving..." : "Submit"}
+              {loading1 ? (
+                "Verifying..."
+              ) : (
+                <h1 className="flex text-xl justify-center gap-2 items-center">
+                  <img
+                    src="google.png"
+                    alt="google"
+                    className="h-10 bg-white rounded-full p-1"
+                  />
+                  Sign In with Google
+                </h1>
+              )}
             </button>
-          </form>
-        )}
+          )}
+
+          {step === 3 && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full p-3 border rounded-md"
+              />
+              {notAcademic && (
+                <input
+                  type="text"
+                  placeholder="Enter your Roll Number"
+                  value={rollno}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      setRollno(value);
+                    }
+                  }}
+                  required
+                  className="w-full p-3 border rounded-md"
+                />
+              )}
+
+              <input
+                type="text"
+                placeholder="Phone Number"
+                value={phone}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,10}$/.test(value)) {
+                    setPhone(value);
+                  }
+                }}
+                onBlur={() => {
+                  if (phone.length !== 10) {
+                    alert("Phone number must be exactly 10 digits long.");
+                  }
+                }}
+                required
+                pattern="\d{10}"
+                maxLength={10}
+                className="w-full p-3 border rounded-md"
+              />
+
+              <input
+                type="text"
+                placeholder="College Name"
+                value={college}
+                onChange={(e) => setCollege(e.target.value)}
+                required
+                className="w-full p-3 border rounded-md"
+              />
+
+              <button
+                type="submit"
+                disabled={loading1}
+                className={`w-full py-3 text-white font-semibold rounded-md transition ${
+                  loading1 ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+                }`}
+              >
+                {loading1 ? "Saving..." : "Submit"}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
