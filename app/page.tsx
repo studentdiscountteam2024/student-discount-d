@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/banner", { method: "GET" });
+        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/discounts", { method: "GET" });
         const result: BrandItem[] = await response.json(); // Ensure type safety for the API response
         setData(result);
       } catch (error) {
@@ -30,7 +30,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="xl:mx-10">
+    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
+    <div className="xl:mx-10 ">
       <Swiper />   
         <SwiperB />
         <div className="brands">
@@ -39,13 +40,13 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="body flex flex-wrap justify-between space-y-10 xl:space-y-1 gap-6 mx-4 mt-10">
+      <div className="body flex flex-wrap justify-between space-y-10 xl:space-y-1 gap-6 mx-4 mt-10 ">
         {data.map((item:any, index:number) => (
           <div key={index} className="">
             <div className="rounded-2xl bg-white w-[90vw] xl:w-[40vw] shadow-lg">
               <img
-                src={item.imgurl}
-                className="rounded-t-2xl w-[90vw] h-full object-cover xl:w-[40vw] "
+                src={item.imageurl}
+                className="rounded-t-2xl w-[90vw] h-full  object-cover xl:w-[40vw] "
                 alt={item.text || "Brand image"} 
               />
               <div className="flex justify-center w-full h-fit">
@@ -60,6 +61,7 @@ export default function Home() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

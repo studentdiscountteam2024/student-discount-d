@@ -92,6 +92,7 @@ const Page: React.FC = () => {
   };
 
   return (
+    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
     <div className="xl:mx-10">
       {/* Main Banner Section */}
       <div className="mbanner rounded-xl shadow-xl overflow-hidden mx-4 mt-16 xl:ml-64 xl:flex-col xl:w-[60vw] xl:justify-center">
@@ -165,6 +166,7 @@ const Page: React.FC = () => {
         />
       </div>
       )}
+    </div>
     </div>
     
   );

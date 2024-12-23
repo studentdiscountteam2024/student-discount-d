@@ -112,10 +112,10 @@ const Page: React.FC = () => {
   }
 
   return (
-    <div className="p-4 mt-16 xl:mx-36">
+    <div className="p-4 mt-16 xl:mx-36 ">
       {loading1 && <Skeleton count={3} height={40}  />}
       {!loading1 && (
-          <section className="flex flex-col border-2 p-4 mb-8 rounded-lg shadow-md">
+          <section className="flex flex-col border-2 p-4 mb-8 rounded-lg shadow-md bg-white">
           <p className="font-semibold flex justify-between text-sm xl:text-lg">
             <h1 className="text-purple-500 ">Name:</h1> {data2?.name || "N/A"}
           </p>
