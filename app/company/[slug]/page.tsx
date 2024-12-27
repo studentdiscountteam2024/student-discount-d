@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -15,21 +14,18 @@ interface BrandItem {
 }
 
 const Page: React.FC = () => {
-
   const [dimensions, setDimensions] = useState({ height: 150, width: 300 });
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        
         setDimensions({ height: 150, width: 1300 });
       } else {
-        
         setDimensions({ height: 150, width: 300 });
       }
     };
 
-    handleResize(); 
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -92,7 +88,6 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
     <div className="xl:mx-10">
       {/* Main Banner Section */}
       <div className="mbanner bg-white rounded-xl shadow-xl overflow-hidden mx-4 mt-16 xl:ml-64 xl:flex-col xl:w-[60vw] xl:justify-center">
@@ -101,7 +96,7 @@ const Page: React.FC = () => {
             <img
               src={mainBrand.imgurl}
               alt={mainBrand.brandname}
-              className="bg-contain object-cover w-full h-auto xl:h-[30vh] xl:w-full xl:object-contain rounded-xl mt-6"
+              className="bg-contain object-cover w-full h-auto  xl:w-full xl:object-contain rounded-xl mt-6"
             />
             <div className="flex justify-center w-full h-fit">
               <Link href={"/checkout"}>
@@ -114,10 +109,8 @@ const Page: React.FC = () => {
         )}
       </div>
 
-      {/* Similar Products Section */}
       <p className="font-semibold m-4 text-xl mt-16">
-        Similar Products Like{" "}
-        <span className="text-[#ff820d]">{slug}</span>
+        Similar Products Like <span className="text-[#ff820d]">{slug}</span>
       </p>
       <div className="body flex flex-wrap mb-10 justify-between space-y-10 xl:space-y-1 gap-6 mx-4 mt-10">
         {displayedProducts.map((item: any, index: number) => (
@@ -138,14 +131,10 @@ const Page: React.FC = () => {
               </Link>
             </div>
           </div>
-          
         ))}
         {!loading && (
           <div className="w-full flex justify-center  mt-4">
-            <button
-              onClick={handleShowMore}
-              className="underline"
-            >
+            <button onClick={handleShowMore} className="underline">
               {showAll ? "Show Less" : "Show More"}
             </button>
           </div>
@@ -153,22 +142,19 @@ const Page: React.FC = () => {
       </div>
 
       {/* Show More Button */}
-     
 
       {/* Loading Skeleton */}
       {loading && (
         <div className="xl:w-100vw">
-        <Skeleton
-          count={3}
-          height={dimensions.height}
-          width={dimensions.width}
-          className="mt-10 mx-4"
-        />
-      </div>
+          <Skeleton
+            count={3}
+            height={dimensions.height}
+            width={dimensions.width}
+            className="mt-10 mx-4"
+          />
+        </div>
       )}
     </div>
-    </div>
-    
   );
 };
 

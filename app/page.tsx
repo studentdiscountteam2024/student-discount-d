@@ -6,9 +6,7 @@ import SwiperB from "./components/swiperbrands";
 import { useState, useEffect } from "react";
 
 // Define the type for the brand data
-interface BrandItem {
-  
-}
+interface BrandItem {}
 
 export const runtime = "edge";
 
@@ -18,7 +16,10 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.studentdiscountteam.workers.dev/data/discounts", { method: "GET" });
+        const response = await fetch(
+          "https://api.studentdiscountteam.workers.dev/data/home",
+          { method: "GET" }
+        );
         const result: BrandItem[] = await response.json(); // Ensure type safety for the API response
         setData(result);
       } catch (error) {
@@ -30,38 +31,36 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
     <div className="xl:mx-10 ">
-      <Swiper />   
-        <SwiperB />
-        <div className="brands">
+      <Swiper />
+      <SwiperB />
+      <div className="brands">
         <div className="flex justify-between mx-4">
           <p className="font-bold text-xl">Explore more</p>
         </div>
       </div>
 
-      <div className="body flex flex-wrap justify-between space-y-10 xl:space-y-1 gap-6 mx-4 mt-10 ">
-        {data.map((item:any, index:number) => (
+      <div className="body flex flex-wrap justify-between space-y-10 xl:space-y-1 gap-6 mx-4  mb-10 mt-10 ">
+        
+        {data.map((item: any, index: number) => (
           <div key={index} className="">
             <div className="rounded-2xl bg-white w-[90vw] xl:w-[40vw] shadow-lg">
               <img
                 src={item.imageurl}
                 className="rounded-t-2xl w-[90vw] h-full  object-cover xl:w-[40vw] "
-                alt={item.text || "Brand image"} 
+                alt={item.text || "Brand image"}
               />
               <div className="flex justify-center w-full h-fit">
-                <Link href={"/checkout"}>
+                <Link href={`${item.link == '/onlinediscounts' ? '/onlinediscounts' : '/checkout'}`}>
                   <button className="rounded-full  text-blue-500  h-[5vh] w-[23vw] xl:w-[11vw] p-1 font-semibold  text-sm">
                     Get Offer
                   </button>
                 </Link>
               </div>
-              
             </div>
           </div>
         ))}
       </div>
-    </div>
     </div>
   );
 }
